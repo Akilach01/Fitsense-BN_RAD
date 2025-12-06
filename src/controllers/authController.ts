@@ -1,4 +1,4 @@
-import user from "../models/User";
+import User from "../models/User";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -8,27 +8,27 @@ import jwt from "jsonwebtoken";
 
 export const register = async(req:Request,res:Response)=>{
     try {
-        const {name,email,password,role} =req.body;
+        const {name,email,password} =req.body;
 
         //check user
 
-        const existingUser = await User.findOne({email});
-        if(existingUser)
+        const exists = await User.findOne({email});
+        if(exists)
             return res.status(400).json({message:"already have an acount with this email"});
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashed = await bcrypt.hash(password, 10);
 
-        const user = await User.create({name,email,password:hashedPassword,
-            role:role || "user",  //default normal user
+        const user = new User({name,email,password:hashed,
+            role: "user",  //default normal user
         });
 
-        return res.status(200).json({
-            message:"user registered succesfully",
-            user:{id:user._id, name:user.name, email:user.email,role:user.role }
-        });
+        await user.save();
+
+        res.status(201).json({
+            message:"user registered succesfully"});
 
     } catch (error) {
-        return res.status(500).json({message:"server error", error});
+        return res.status(500).json({message:"server error"});
         }
 };
 
@@ -41,8 +41,8 @@ export const login = async(req: Request, res: Response) => {
     if(!user)
         return res.status(400).json({message:"invalid email or password"});
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    const match = await bcrypt.compare(password, user.password);
+    if (!match)
         return res.status(400).json({message:"invalid email or password"});
     
     const token = jwt.sign({
@@ -50,17 +50,17 @@ export const login = async(req: Request, res: Response) => {
         role:user.role
     },
     process.env.JWT_SECRET!,
-    {expiresIn: "7d"}
+    {expiresIn: "1d"}
   );
 
-    return res.status(200).json({message:"login success",token,user:{id: user._id,
+     res.json({message:"login success",token,user:{id: user._id,
         name: user.name,
         email: user.email,
         role: user.role}
     });
 
 }catch(error){
-    return res.status(500).json({message:"server error", error});
+    return res.status(500).json({message:"server error"});
 
  }
 };
