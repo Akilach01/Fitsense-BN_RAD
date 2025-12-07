@@ -1,10 +1,10 @@
 import { Router } from "express";
-import {updateProfile}from "../controllers/userController"
-import {authenticate} from "../middleware/authMiddleware"
+import {updateProfile}from "../controllers/userController";
+import {auth} from "../middleware/authMiddleware";
 
 
-const router = Router()
+const router = Router();
 
-router.put("/update", authenticate, updateProfile)
+router.put("/update-profile", auth, updateProfile);
 
-export default router
+export default router;
