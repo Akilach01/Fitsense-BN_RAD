@@ -18,8 +18,13 @@ export const getAllPlans = async(req: Request, res: Response) =>{
 };
 
 export const updatePlanStatus = async(req: Request, res: Response) =>{
-    
+    const{status} = req.body;
+
+    await Plan.findByIdAndUpdate(req.params.id,{status});
+
+    res.json({message:"updated plan status succesfully"});
 };
+
 
 
 
