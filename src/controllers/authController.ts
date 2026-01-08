@@ -2,7 +2,9 @@ import User from "../models/User";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
+dotenv.config();
 
 
 
@@ -49,7 +51,7 @@ export const login = async(req: Request, res: Response) => {
         id:user._id,
         role:user.role
     },
-    process.env.JWT_SECRET!,
+    process.env.jwt_secret!,
     {expiresIn: "1d"}
   );
 
@@ -63,4 +65,29 @@ export const login = async(req: Request, res: Response) => {
     return res.status(500).json({message:"server error"});
 
  }
+};
+
+export const getMe = async(req:Request, res:Response)=>{
+  try {
+    const userId = (req as any).user?.id;
+    
+    if(!userId)
+      return res.status(401).json({message:"No token provided"});
+
+    const user = await User.findById(userId);
+    
+    if(!user)
+      return res.status(404).json({message:"User not found"});
+
+    res.json({
+      user:{
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch(error){
+    return res.status(500).json({message:"server error"});
+  }
 };
