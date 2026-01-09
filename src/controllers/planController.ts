@@ -20,5 +20,5 @@ export const createPlan = async(req: AuthRequest, res: Response)=>{
 
 export const getMyplans = async(req:AuthRequest,res:Response)=>{
     const plans = await Plan.find({user:req.user.id});
-    res.json(plans);
+    res.json({plans});
 };

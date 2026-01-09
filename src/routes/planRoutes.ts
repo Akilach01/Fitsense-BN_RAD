@@ -6,6 +6,6 @@ import { createPlan, getMyplans } from "../controllers/planController";
 const router = Router();
 
 router.post("/", auth, createPlan);
-router.get("/mine",auth,getMyplans);
+router.get("/me",auth,getMyplans);
 
 export default router;

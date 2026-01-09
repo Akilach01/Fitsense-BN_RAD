@@ -3,7 +3,7 @@ import User from "../models/User";
 import Plan from "../models/Plan";
 
 export const getAllUsers = async(req: Request, res: Response) =>{
-    const users = await User.find();
+    const users = await User.find().select("-password");
     res.json(users);
 };
 
