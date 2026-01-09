@@ -1,6 +1,6 @@
 import User from "../models/User";
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -43,7 +43,10 @@ export const login = async(req: Request, res: Response) => {
     if(!user)
         return res.status(400).json({message:"invalid email or password"});
 
-    const match = await bcrypt.compare(password, user.password);
+  console.log("login attempt for:", email);
+  console.log("stored password hash length:", user.password?.length);
+  const match = await bcrypt.compare(password, user.password);
+  console.log("password match:", match);
     if (!match)
         return res.status(400).json({message:"invalid email or password"});
     
@@ -51,7 +54,7 @@ export const login = async(req: Request, res: Response) => {
         id:user._id,
         role:user.role
     },
-    process.env.jwt_secret!,
+  process.env.JWT_SECRET || process.env.jwt_secret!,
     {expiresIn: "1d"}
   );
 

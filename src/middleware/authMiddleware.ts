@@ -11,7 +11,7 @@ export const auth =(req:AuthRequest, res:Response, next:NextFunction)=>{
   if (!token)return res.status(401).json({message:"No token has provided"});
    
       try {
-        const decoded = jwt.verify(token,process.env.JWT_SECRET!);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || process.env.jwt_secret!);
         req.user = decoded;
         next();
         
