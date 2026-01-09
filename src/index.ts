@@ -18,7 +18,7 @@ app.use(cors({ origin: "*" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/admin", adminRoutes)
 

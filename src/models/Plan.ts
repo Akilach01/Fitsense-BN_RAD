@@ -12,14 +12,14 @@ export interface IPlan extends Document{
 
 const planSchema = new Schema<IPlan>(
     {
-        user:{type:Schema.Types.ObjectId,ref:"User",required:true},
+        user:{type:Schema.Types.ObjectId,ref:"user",required:true},
         title:{type:String, required:true},
          description:{type:String, required:true},
           exercises:{type:[String], required:true},
          status:{type:String,
              enum:["PENDING","APPROVED","REJECTED"],
             default:"PENDING"
-            }
+            },
         },{timestamps:true}
     );
 
