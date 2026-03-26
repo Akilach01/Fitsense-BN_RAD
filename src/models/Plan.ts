@@ -1,6 +1,6 @@
 import mongoose,{Document,Mongoose,Schema} from "mongoose";
 
-export type planStatus = "PENDING"|"APPROVED"|"REJECTED";
+export type planStatus = "PENDING"|"APPROVED"|"REJECTED"|"NEEDS_UPDATE";
 
 export interface IPlan extends Document{
     user:mongoose.Types.ObjectId;
@@ -8,6 +8,7 @@ export interface IPlan extends Document{
     description:string;
     exercises:string[];
     status:planStatus;
+     feedback?: string;
 }
 
 const planSchema = new Schema<IPlan>(
@@ -17,9 +18,10 @@ const planSchema = new Schema<IPlan>(
          description:{type:String, required:true},
           exercises:{type:[String], required:true},
          status:{type:String,
-             enum:["PENDING","APPROVED","REJECTED"],
+             enum:["PENDING","APPROVED","REJECTED","NEEDS_UPDATE"],
             default:"PENDING"
             },
+            feedback: {type: String,default: ""}
         },{timestamps:true}
     );
 
