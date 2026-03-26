@@ -31,21 +31,44 @@ export const getAllPlans = async(req: Request, res: Response) =>{
     }
 };
 
-export const updatePlanStatus = async(req: Request, res: Response) =>{
+export const reviewPlan = async (req: Request, res: Response) => {
     try {
-        const { status } = req.body; // "APPROVED" | "REJECTED"
+        const { status, feedback, title, description, exercises } = req.body;
 
-        if (!["APPROVED", "REJECTED"].includes(status)) {
+        const validStatuses = ["APPROVED", "REJECTED", "NEEDS_UPDATE"];
+
+        if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: "Invalid status" });
         }
 
-        await Plan.findByIdAndUpdate(req.params.id, { status });
+        const plan = await Plan.findById(req.params.id);
 
-        res.json({ message: `Plan ${status}` }); 
+        if (!plan) {
+            return res.status(404).json({ message: "Plan not found" });
+        }
+
+        // ✅ Update status & feedback
+        plan.status = status;
+        if (feedback !== undefined) plan.feedback = feedback;
+
+        // ✅ Optional edits by admin
+        if (title) plan.title = title;
+        if (description) plan.description = description;
+        if (exercises) plan.exercises = exercises;
+
+        await plan.save();
+
+        res.json({
+            message: `Plan ${status} successfully`,
+            plan
+        });
+
     } catch (error) {
-        res.status(500).json({message:"server error"});
+        console.error("reviewPlan error:", error);
+        res.status(500).json({ message: "server error" });
     }
 };
+
 
 
 
