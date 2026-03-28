@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const adminController_1 = require("../controllers/adminController");
+const router = (0, express_1.Router)();
+router.get("/users", authMiddleware_1.auth, authMiddleware_1.isAdmin, adminController_1.getAllUsers);
+router.delete("/users/:id", authMiddleware_1.auth, authMiddleware_1.isAdmin, adminController_1.deleteUser);
+router.get("/plans", authMiddleware_1.auth, authMiddleware_1.isAdmin, adminController_1.getAllPlans);
+router.put("/plans/:id", authMiddleware_1.auth, authMiddleware_1.isAdmin, adminController_1.reviewPlan);
+exports.default = router;
