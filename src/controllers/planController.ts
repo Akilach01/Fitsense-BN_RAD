@@ -10,7 +10,7 @@ export const createPlan = async(req: AuthRequest, res: Response)=>{
     const plan = new Plan({user:req.user.id,title,description,exercises});
 
     await plan.save();
-    res.status(201).json({message:"created plan,pending approvel"})
+    res.status(201).json({message:"created plan, pending approval"})
     
   } catch {
     res.status(500).json({message:"server error occured"});
